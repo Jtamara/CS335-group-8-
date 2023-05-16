@@ -39,7 +39,7 @@ int main()
 		//2. a function figures out what to do with both choices and executes
 		//the function can also change the player & computer's stats (the attack and hp)
 		//I also think the function be interactive and tell the user what's going on
-	   } 
+	   
 	}while (player_hp > 0 || computer_hp > 0);
 	// need a function that states who won and who lost
 	// yeah that's pretty much it
@@ -47,4 +47,4 @@ int main()
 	
 //just place functions here
 
-}
+
