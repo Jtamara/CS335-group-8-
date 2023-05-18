@@ -2,7 +2,6 @@
 #include <iostream>
 #include "pokemon/pokemon_factory.hpp"
 #include "pokemon/attack_factory.hpp"
-#include "pokemon/colors.hpp"
 
 // This function is used to allocate random Effort Values (EVs) to a player's Pokemon.
 void allocate_pokemon_random_evs(std::unique_ptr<Pokemon> &pokemon)
@@ -85,15 +84,9 @@ int main()
     opponents_pokemon->add_attack(AttackFactory::build("Thunder Punch"));
     opponents_pokemon->add_attack(AttackFactory::build("Earthquake"));
 
-    // Player colors
-    std::string PLAYER_COLOR = CYAN_TEXT;
-    std::string OPPONENT_COLOR = RED_TEXT;
-    std::string PLAYER_HP_COLOR = RESET_COLOR;
-    std::string OPPONENT_HP_COLOR = RESET_COLOR;
-
     std::cout << "--------------------------------------------" << std::endl;
-    std::cout << "You have selected " << PLAYER_COLOR << players_pokemon->get_name() << "!" << RESET_COLOR << std::endl;
-    std::cout << "Your opponent has chosen " << OPPONENT_COLOR << opponents_pokemon->get_name() << "!" << RESET_COLOR << std::endl;
+    std::cout << "You have selected " << players_pokemon->get_name() << "!" << std::endl;
+    std::cout << "Your opponent has chosen " << opponents_pokemon->get_name() << "!" << std::endl;
 
     // Battle Sequence
     bool has_not_ended = true;
@@ -109,16 +102,13 @@ int main()
             break;
         }
 
-        PLAYER_HP_COLOR = players_pokemon->get_health() >= 200 ? GREEN_TEXT : RED_TEXT;
-        OPPONENT_HP_COLOR = opponents_pokemon->get_health() >= 200 ? GREEN_TEXT : RED_TEXT;
-
         // Print out current game information, HP, etc
         std::cout << "--------------------------------------------" << std::endl;
-        std::cout << "Your Pokemon: " << PLAYER_COLOR << players_pokemon->get_name() << RESET_COLOR << std::endl;
-        std::cout << "HP: " << PLAYER_HP_COLOR << players_pokemon->get_health() << RESET_COLOR << std::endl
+        std::cout << "Your Pokemon: " << players_pokemon->get_name() << std::endl;
+        std::cout << "HP: " << players_pokemon->get_health() << std::endl
                   << std::endl;
-        std::cout << "Opponent's Pokemon: " << OPPONENT_COLOR << opponents_pokemon->get_name() << RESET_COLOR << std::endl;
-        std::cout << "HP: " << OPPONENT_HP_COLOR << opponents_pokemon->get_health() << RESET_COLOR;
+        std::cout << "Opponent's Pokemon: " << opponents_pokemon->get_name() << std::endl;
+        std::cout << "HP: " << opponents_pokemon->get_health();
 
         // Print Attack Options
         std::cout << std::endl
@@ -150,11 +140,11 @@ int main()
         }
         std::cout << std::endl
                   << "--------------------------------------------" << std::endl;
-        std::cout << PLAYER_COLOR << players_pokemon->get_name() << RESET_COLOR << " has used " << players_pokemon->get_attack(move_selection - 1)->get_name() << "!" << std::endl;
+        std::cout << players_pokemon->get_name() << " has used " << players_pokemon->get_attack(move_selection - 1)->get_name() << "!" << std::endl;
 
         // Calculate how much damage the player is dealing to the opponent
         int damage_to_deal = players_pokemon->CalcDamage(opponents_pokemon.get(), move_selection - 1);
-        std::cout << OPPONENT_COLOR << damage_to_deal << RESET_COLOR << " damage dealt!" << std::endl;
+        std::cout << damage_to_deal << " damage dealt!" << std::endl;
         opponents_pokemon->TakeDamage(damage_to_deal);
 
         // Terminal condition
@@ -171,9 +161,9 @@ int main()
         auto minimax = opponents_pokemon->MinimaxDecision(players_pokemon, 4, 1); // Use minimax to determine best move to use with a ply of 4
         int opponent_move_selection = minimax.second;
 
-        std::cout << "Opponent's " << OPPONENT_COLOR << opponents_pokemon->get_name() << RESET_COLOR << " has used " << opponents_pokemon->get_attack(opponent_move_selection)->get_name() << "!" << std::endl;
+        std::cout << "Opponent's " << opponents_pokemon->get_name() << " has used " << opponents_pokemon->get_attack(opponent_move_selection)->get_name() << "!" << std::endl;
         int damage_to_take = opponents_pokemon->CalcDamage(players_pokemon.get(), opponent_move_selection);
-        std::cout << OPPONENT_COLOR << damage_to_take << RESET_COLOR << " damage dealt!" << std::endl;
+        std::cout << damage_to_take << " damage dealt!" << std::endl;
         players_pokemon->TakeDamage(damage_to_take);
     }
 
