@@ -4,6 +4,36 @@
 #include "pokemon/attack_factory.hpp"
 
 int main() {
+    // This function is used to allocate random Effort Values (EVs) to a player's Pokemon.
+    void allocate_pokemon_random_evs(std::unique_ptr<Pokemon> & pokemon) {
+    int total_evs = 508;
+    while (total_evs > 0) {
+        int rand_ev = rand() % 200 + 1;         // Generate a random number of EVs between 1 and the remaining total.
+        int rand_stat = rand() % 5;                  // Choose a random stat (out of 5 possible: health, base power, base special power, defense, special defense).
+        switch (rand_stat) {
+            case 0:
+                pokemon->add_health(rand_ev);
+                break;
+            case 1:
+                pokemon->add_base_power(rand_ev);
+                break;
+            case 2:
+                pokemon->add_base_special_power(rand_ev);
+                break;
+            case 3:
+                pokemon->add_def(rand_ev);
+                break;
+            case 4:
+                pokemon->add_spdef(rand_ev);
+                break;
+            default:
+                break;
+        }
+        total_evs -= rand_ev;
+    }
+}
+    
+    allocate_pokemon_random_evs(players_pokemon);
     std::cout << "Welcome to Pokemon (Fake) Battle Simulator." << std::endl;
     std::cout << "The following Pokemon are available: " << std::endl;
     // Use pokemon factory to get list of options
@@ -12,7 +42,7 @@ int main() {
         std::cout << "\tOption " << it->first << ": " << it->second << std::endl;
         ++it;
     }
-
+    allocate_pokemon_random_evs(opponents_pokemon);
     // Get user input for pokemon choice
     std::cout << std::endl << "Please select your Pokemon: ";
     int selection;
