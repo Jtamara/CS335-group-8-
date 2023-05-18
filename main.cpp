@@ -114,6 +114,12 @@ int main() {
         int damage_to_take = opponents_pokemon->CalcDamage(players_pokemon.get(), opponent_move_selection);
         std::cout << damage_to_take << " damage dealt!" << std::endl;
         players_pokemon->TakeDamage(damage_to_take);
+
+        // Terminal condition
+        if (Pokemon::has_fainted(players_pokemon, opponents_pokemon)) {
+            has_not_ended = false;
+            player_won = players_pokemon->has_fainted() ? false : true;
+        }
     }
 
     if (player_won) {
