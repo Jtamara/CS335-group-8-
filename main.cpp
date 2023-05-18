@@ -41,6 +41,7 @@ int main() {
 
     auto opponents_pokemon = PokemonFactory::build(PokemonOptions::kOptions.at(opponent_selection));
 
+    // TODO: Hardcoded moves for testing
     opponents_pokemon->add_attack(AttackFactory::build("Fire Blast"));
     opponents_pokemon->add_attack(AttackFactory::build("Focus Blast"));
     opponents_pokemon->add_attack(AttackFactory::build("Thunder Punch"));
@@ -48,7 +49,7 @@ int main() {
 
     std::cout << "--------------------------------------------" << std::endl;
     std::cout << "You have selected " << players_pokemon->get_name() << "!" << std::endl;
-    std::cout << "Your opponent has chosen " << opponents_pokemon->get_name() << "!";
+    std::cout << "Your opponent has chosen " << opponents_pokemon->get_name() << "!" << std::endl;
 
     // TODO: Battle Sequence Below
     bool has_not_ended = true;
@@ -64,13 +65,13 @@ int main() {
         }
 
         // Print out current game information, HP, etc
-        std::cout << std::endl << "--------------------------------------------" << std::endl;
+        std::cout << "--------------------------------------------" << std::endl;
         std::cout << "Your Pokemon: " << players_pokemon->get_name() << std::endl;
         std::cout << "HP: " << players_pokemon->get_health() << std::endl << std::endl;
         std::cout << "Opponent's Pokemon: " << opponents_pokemon->get_name() << std::endl;
         std::cout << "HP: " << opponents_pokemon->get_health();
 
-        // Draw a box around attack selections like actual pokemon game
+        // TODO: Draw a box around attack selections like actual pokemon game
         // 1 2
         // 3 4
         std::cout << std::endl << "--------------------------------------------" << std::endl;
@@ -87,6 +88,10 @@ int main() {
             }
             std::cout << "Invalid selection. Please try again." << std::endl;
         }
+        std::cout << std::endl << "--------------------------------------------" << std::endl;
+        std::cout << players_pokemon->get_name() << " has used " << players_pokemon->get_attack(move_selection - 1)->get_name() << "!" << std::endl;
+        int damage_to_deal = players_pokemon->CalcDamage(opponents_pokemon, move_selection - 1);
+        std::cout << damage_to_deal << " damage dealt!" << std::endl;
     }
 
     if (player_won) {

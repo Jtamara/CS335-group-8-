@@ -23,6 +23,22 @@ public:
     std::string get_name() {
         return this->name_;
     };
+
+    Category get_category() {
+        return this->category_;
+    };
+
+    int get_power() {
+        return this->power_;
+    };
+
+    double get_accuracy() {
+        return this->accuracy_;
+    };
+
+    Types get_type() {
+        return this->type_;
+    };
 };
 
 #endif // ATTACK_H

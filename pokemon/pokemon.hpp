@@ -34,9 +34,7 @@ public:
     };
 
     static bool has_fainted(const std::unique_ptr<Pokemon> & player, const std::unique_ptr<Pokemon> & opponent) {
-        if (player->has_fainted() || opponent->has_fainted())
-            return true;
-        return false;
+        return player->has_fainted() || opponent->has_fainted();
     };
 
     std::vector<std::shared_ptr<Attack>> get_attacks() {
@@ -52,7 +50,32 @@ public:
     };
 
     int CalcDamage(const std::unique_ptr<Pokemon> & other, int move_selection) {
-        return 0;
+        auto move_used = this->attacks_[move_selection];
+        int total_damage = move_used->get_power();
+        // Check for accuracy
+        if (move_used->get_accuracy() < ((double)rand() / (RAND_MAX))) {
+            std::cout << "The attack missed!" << std::endl;
+            return 0;
+        }
+        // Check for type coverage
+        if (is_super_effective(move_used->get_type(), other->get_type())) {
+            std::cout << "It's super effective!" << std::endl;
+            total_damage *= 2;
+        }
+        else if (is_not_very_effective(move_used->get_type(), other->get_type())) {
+            std::cout << "It's not very effective..." << std::endl;
+            total_damage /= 2;
+        }
+
+        // Check for critical hits with a 6.25% chance
+        if (rand() % 16 == 0) {
+            std::cout << "Critical hit!" << std::endl;
+            total_damage *= 2;
+        }
+
+        // TODO: Calculate Special/Physical attacks with opponent's defense stat
+
+        return total_damage;
     };
 };
 
