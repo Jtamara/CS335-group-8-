@@ -94,7 +94,7 @@ public:
         return this->attacks_[index];
     };
 
-    int CalcDamage(const std::unique_ptr<Pokemon> & other, int move_selection) {
+    int CalcDamage(Pokemon * other, int move_selection, bool print = true) {
         // damage calculations used from formula: https://bulbapedia.bulbagarden.net/wiki/Damage for Generation 1
         // Damage = (((2 x Level x Critical) / 5) + 2) * Power * (A/D) / 50) x STAB x Type x RAND(0.85, 1.0)
 
@@ -102,7 +102,9 @@ public:
 
         // Check for accuracy
         if (move_used->get_accuracy() < ((double)rand() / (RAND_MAX))) {
-            std::cout << "The attack missed!" << std::endl;
+            if (print) {
+                std::cout << "The attack missed!" << std::endl;
+            }
             return 0;
         }
 
@@ -111,7 +113,9 @@ public:
 
         // Check for critical hits with a 6.25% chance
         if (rand() % 16 == 0) {
-            std::cout << "Critical hit!" << std::endl;
+            if (print) {
+                std::cout << "Critical hit!" << std::endl;
+            }
             critical_hit = 2;
         }
 
@@ -138,11 +142,15 @@ public:
 
         // Check for type coverage
         if (is_super_effective(move_used->get_type(), other->get_type())) {
-            std::cout << "It's super effective!" << std::endl;
+            if (print) {
+                std::cout << "It's super effective!" << std::endl;
+            }
             total_damage *= 2;
         }
         else if (is_not_very_effective(move_used->get_type(), other->get_type())) {
-            std::cout << "It's not very effective..." << std::endl;
+            if (print) {
+                std::cout << "It's not very effective..." << std::endl;
+            }
             total_damage /= 2;
         }
 
@@ -150,6 +158,51 @@ public:
         total_damage *= ((double)rand() / (RAND_MAX)) * 0.15 + 0.85;
 
         return total_damage;
+    };
+
+    std::pair<int, int> minimax_decision(const std::unique_ptr<Pokemon> & opponent, int depth, int whose_turn) {
+        // Algorithm inspiration from https://github.com/GeorgeSeif/Tic-Tac-Toe-AI/blob/master/Source.cpp#L201 with no alpha beta pruning
+        // Algorithm does not account for the chance of missing or critical hits
+
+        int best_move = 0; // the index of the best attack to make
+        int best_score = 0; // the score of the best attack to make
+
+        if (depth == 0) {
+            return std::make_pair(0, 0);
+        }
+
+        // If we hit a terminal state, return the best score and move
+        if (this->has_fainted()) {
+            return std::make_pair(-1000, 0);
+        }
+        else if (opponent->has_fainted()) {
+            return std::make_pair(1000, 0);
+        }
+
+        // Maximizing player's turn
+        if (whose_turn == 1) { // 1 is AI's turn, 0 is player's turn
+            best_score = -1000;
+            for (int i = 0; i < this->get_attacks().size(); i++) {
+                int score = this->CalcDamage(opponent.get(), i, false);
+                if (score > best_score) {
+                    best_score = score;
+                    best_move = i;
+                }
+            }
+            return std::make_pair(best_score + minimax_decision(opponent, depth - 1, 0).first, best_move);
+        }
+        else { // Minimizing opponent's turn
+            best_score = 1000;
+            for (int i = 0; i < opponent->get_attacks().size(); i++) {
+                int score = opponent->CalcDamage(this, i, false);
+                if (score < best_score) {
+                    best_score = score;
+                    best_move = i;
+                }
+            }
+            return std::make_pair(best_score + minimax_decision(opponent, depth - 1, 1).first, best_move);
+        }
+        return std::make_pair(best_score, best_move);
     };
 };
 

@@ -91,13 +91,32 @@ int main() {
         }
         std::cout << std::endl << "--------------------------------------------" << std::endl;
         std::cout << players_pokemon->get_name() << " has used " << players_pokemon->get_attack(move_selection - 1)->get_name() << "!" << std::endl;
-        int damage_to_deal = players_pokemon->CalcDamage(opponents_pokemon, move_selection - 1);
+
+        // Calculate how much damage the player is dealing to the opponent
+        int damage_to_deal = players_pokemon->CalcDamage(opponents_pokemon.get(), move_selection - 1);
         std::cout << damage_to_deal << " damage dealt!" << std::endl;
+        opponents_pokemon->TakeDamage(damage_to_deal);
+
+        // Terminal condition
+        if (Pokemon::has_fainted(players_pokemon, opponents_pokemon)) {
+            has_not_ended = false;
+            player_won = players_pokemon->has_fainted() ? false : true;
+            continue;
+        }
+
+        std::cout << std::endl;
+
+        // Calculate how much damage opponent is dealing to player.
+        int opponent_move_selection = opponents_pokemon->minimax_decision(players_pokemon, 4, 1).second; // Use minimax to determine best move to use with a ply of 4
+        std::cout << "Opponent's " << opponents_pokemon->get_name() << " has used " << opponents_pokemon->get_attack(opponent_move_selection)->get_name() << "!" << std::endl;
+        int damage_to_take = opponents_pokemon->CalcDamage(players_pokemon.get(), opponent_move_selection);
+        std::cout << damage_to_take << " damage dealt!" << std::endl;
+        players_pokemon->TakeDamage(damage_to_take);
     }
 
     if (player_won) {
         std::cout << std::endl << "Congratulations!" << std::endl;
-        std::cout << "You have won the battle against " << opponents_pokemon->get_name() << "." << std::endl;
+        std::cout << "You have won the battle against your Opponent's " << opponents_pokemon->get_name() << "." << std::endl;
     }
     else {
         std::cout << std::endl << "Aww, you lost! Better luck next time!" << std::endl;
