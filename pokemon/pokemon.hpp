@@ -182,25 +182,38 @@ public:
         // Maximizing player's turn
         if (whose_turn == 1) { // 1 is AI's turn, 0 is player's turn
             best_score = -1000;
+            int score = 0;
             for (int i = 0; i < this->get_attacks().size(); i++) {
-                int score = this->CalcDamage(opponent.get(), i, false);
+                score = this->CalcDamage(opponent.get(), i, false);
                 if (score > best_score) {
                     best_score = score;
                     best_move = i;
                 }
             }
-            return std::make_pair(best_score + MinimaxDecision(opponent, depth - 1, 0).first, best_move);
+            
+            // Deal damage
+            this->TakeDamage(score);
+            auto pair = std::make_pair(best_score + MinimaxDecision(opponent, depth - 1, 0).first, best_move);
+            this->add_health(score);
+
+            return pair;
         }
         else { // Minimizing opponent's turn
             best_score = 1000;
+            int score = 0;
             for (int i = 0; i < opponent->get_attacks().size(); i++) {
-                int score = opponent->CalcDamage(this, i, false);
+                score = opponent->CalcDamage(this, i, false);
                 if (score < best_score) {
                     best_score = score;
                     best_move = i;
                 }
             }
-            return std::make_pair(best_score + MinimaxDecision(opponent, depth - 1, 1).first, best_move);
+            // Deal damage
+            opponent->TakeDamage(score);
+            auto pair = std::make_pair(best_score + MinimaxDecision(opponent, depth - 1, 1).first, best_move);
+            opponent->add_health(score);
+
+            return pair;
         }
         return std::make_pair(best_score, best_move);
     };
