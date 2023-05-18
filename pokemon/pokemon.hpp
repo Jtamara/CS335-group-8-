@@ -90,6 +90,10 @@ public:
         this->attacks_.push_back(attack);
     };
 
+    void set_attacks(std::vector<std::shared_ptr<Attack>> attacks) {
+        this->attacks_ = attacks;
+    };
+
     std::shared_ptr<Attack> get_attack(int index) {
         return this->attacks_[index];
     };

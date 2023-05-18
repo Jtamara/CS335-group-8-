@@ -26,7 +26,7 @@ public:
 			return std::make_shared<Attack>(move_name, Category::Physical, 75, 1.0, Types::Electric);
 		else if (move_name == "Flamethrower")
 			return std::make_shared<Attack>(move_name, Category::Physical, 90, 1.0, Types::Fire);
-		//Darkrai
+		// Darkrai
 		else if (move_name == "Quick Attack")
 			return std::make_shared<Attack>(move_name, Category::Physical, 40, 1.0, Types::Normal);
 		else if (move_name == "Feint Attack")
@@ -35,16 +35,16 @@ public:
 			return std::make_shared<Attack>(move_name, Category::Special, 100, 1.0, Types::Dark);
 		else if (move_name == "Dark Pulse")
 			return std::make_shared<Attack>(move_name, Category::Special, 80, 1.0, Types::Dark);
-	    //decidueye
+	    // Decidueye
 	    else if (move_name == "Spirit Shackle")
 			return std::make_shared<Attack>(move_name, Category::Physical, 80, 1.0, Types::Ghost);
 		else if (move_name == "Leafage")
 			return std::make_shared<Attack>(move_name, Category::Physical, 40, 1.0, Types::Grass);
 		else if (move_name == "Phantom Force")
 			return std::make_shared<Attack>(move_name, Category::Physical, 90, 1.0, Types::Ghost);
-		else if (move_name == "Razor Leaf") //venasaur can also use
+		else if (move_name == "Razor Leaf") // Also for Venasaur
 			return std::make_shared<Attack>(move_name, Category::Physical, 55, 0.95, Types::Grass);
-        //mimikyu
+        // Mimikyu
     	else if (move_name == "Astonish")
 			return std::make_shared<Attack>(move_name, Category::Physical, 30, 1.0, Types::Ghost);
 		else if (move_name == "Scratch")
@@ -52,8 +52,8 @@ public:
 		else if (move_name == "Shadow Claw")
 			return std::make_shared<Attack>(move_name, Category::Physical, 70, 1.0, Types::Ghost);
 		else if (move_name == "Play Rough")
-			return std::make_shared<Attack>(move_name, Category::Physical, 90, .90, Types::Ghost); // We are making it ghost because there is no fairy types
-        //snorlax
+			return std::make_shared<Attack>(move_name, Category::Physical, 90, .90, Types::Ghost);  // We are making it ghost because there is no fairy types
+        // Snorlax
        	else if (move_name == "Last Resort")
 			return std::make_shared<Attack>(move_name, Category::Physical, 140, 1.0, Types::Normal);
 		else if (move_name == "Lick")
@@ -62,7 +62,7 @@ public:
 			return std::make_shared<Attack>(move_name, Category::Special, 50, 1.0, Types::Normal);
 		else if (move_name == "Crunch")
 			return std::make_shared<Attack>(move_name, Category::Physical, 80, 1.0, Types::Dark);
-        //weenasaur
+        // Venasaur
         else if (move_name == "Petal Blizzard")
 			return std::make_shared<Attack>(move_name, Category::Physical, 90, 1.0, Types::Grass);
 		else if (move_name == "Petal Dance")
@@ -71,7 +71,7 @@ public:
 			return std::make_shared<Attack>(move_name, Category::Physical, 120, 1.0, Types::Normal);
 		else if (move_name == "Solar Beam")
 			return std::make_shared<Attack>(move_name, Category::Special, 120, 1.0, Types::Grass);
-        //zoroark
+        // Zoroark
         else if (move_name == "Night Slash")
 			return std::make_shared<Attack>(move_name, Category::Physical, 70, 1.0, Types::Dark);
 		else if (move_name == "Knock Off")
@@ -80,6 +80,9 @@ public:
 			return std::make_shared<Attack>(move_name, Category::Physical, 95, 1.0, Types::Dark);
 		else if (move_name == "Night Daze")
 			return std::make_shared<Attack>(move_name, Category::Special, 85, 0.95, Types::Dark);
+		// Others
+		else if (move_name == "Struggle")  // fall-back for undefined pokemon
+			return std::make_shared<Attack>(move_name, Category::Physical, 50, 1.0, Types::Normal);
 		else
 			return nullptr;
 	}
