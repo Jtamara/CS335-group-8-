@@ -3,13 +3,12 @@
 #include "pokemon/pokemon_factory.hpp"
 #include "pokemon/attack_factory.hpp"
 
-int main() {
-    // This function is used to allocate random Effort Values (EVs) to a player's Pokemon.
-    void allocate_pokemon_random_evs(std::unique_ptr<Pokemon> & pokemon) {
+// This function is used to allocate random Effort Values (EVs) to a player's Pokemon.
+void allocate_pokemon_random_evs(std::unique_ptr<Pokemon> & pokemon) {
     int total_evs = 508;
     while (total_evs > 0) {
-        int rand_ev = rand() % 200 + 1;         // Generate a random number of EVs between 1 and the remaining total.
-        int rand_stat = rand() % 5;                  // Choose a random stat (out of 5 possible: health, base power, base special power, defense, special defense).
+        int rand_ev = rand() % 200 + 1; // Generate a random number of EVs between 1 and the remaining total.
+        int rand_stat = rand() % 5; // Choose a random stat (out of 5 possible: health, base power, base special power, defense, special defense).
         switch (rand_stat) {
             case 0:
                 pokemon->add_health(rand_ev);
@@ -32,8 +31,8 @@ int main() {
         total_evs -= rand_ev;
     }
 }
-    
-    allocate_pokemon_random_evs(players_pokemon);
+
+int main() {
     std::cout << "Welcome to Pokemon (Fake) Battle Simulator." << std::endl;
     std::cout << "The following Pokemon are available: " << std::endl;
     // Use pokemon factory to get list of options
@@ -42,7 +41,6 @@ int main() {
         std::cout << "\tOption " << it->first << ": " << it->second << std::endl;
         ++it;
     }
-    allocate_pokemon_random_evs(opponents_pokemon);
     // Get user input for pokemon choice
     std::cout << std::endl << "Please select your Pokemon: ";
     int selection;
@@ -61,6 +59,7 @@ int main() {
 
     // Only the player & opponent pokemon will be instantiated
     auto players_pokemon = PokemonFactory::build(PokemonOptions::kOptions.at(selection));
+    allocate_pokemon_random_evs(players_pokemon);
 
     // TODO: Randomly allocate 508 EVs, with a max of 252 per stat to add variance to game
 
@@ -72,6 +71,7 @@ int main() {
 
 
     auto opponents_pokemon = PokemonFactory::build(PokemonOptions::kOptions.at(opponent_selection));
+    allocate_pokemon_random_evs(opponents_pokemon);
 
     // TODO: Hardcoded moves for testing
     opponents_pokemon->add_attack(AttackFactory::build("Fire Blast"));
