@@ -32,6 +32,8 @@ int main() {
     // Only the player & opponent pokemon will be instantiated
     auto players_pokemon = PokemonFactory::build(PokemonOptions::kOptions.at(selection));
 
+    // TODO: Randomly allocate 508 EVs, with a max of 252 per stat to add variance to game
+
     // Hardcoded moves for testing
     players_pokemon->add_attack(AttackFactory::build("Hydro Pump"));
     players_pokemon->add_attack(AttackFactory::build("Mega Kick"));

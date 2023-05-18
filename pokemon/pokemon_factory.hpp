@@ -36,22 +36,23 @@ public:
 class PokemonFactory {
 public:
 	static std::unique_ptr<Pokemon> build(std::string pokemon_name) {
+		// All stats pulled from https://play.pokemonshowdown.com/teambuilder
 		if (pokemon_name == "Blastoise")
-			return std::make_unique<Pokemon>(pokemon_name, 100, Types::Water);
+			return std::make_unique<Pokemon>(pokemon_name, 299, 202, 206, 236, 246, Types::Water);
 		else if (pokemon_name == "Charizard")
-			return std::make_unique<Pokemon>(pokemon_name, 100, Types::Fire);
+			return std::make_unique<Pokemon>(pokemon_name, 297, 204, 254, 192, 254, Types::Fire);
 		else if (pokemon_name == "Darkrai")
-			return std::make_unique<Pokemon>(pokemon_name, 75, Types::Dark);
+			return std::make_unique<Pokemon>(pokemon_name, 281, 216, 306, 216, 301, Types::Dark);
 		else if (pokemon_name == "Decidueye")
-			return std::make_unique<Pokemon>(pokemon_name, 80, Types::Grass);
+			return std::make_unique<Pokemon>(pokemon_name, 291, 250, 236, 186, 236, Types::Grass);
 		else if (pokemon_name == "Mimikyu")
-			return std::make_unique<Pokemon>(pokemon_name, 75, Types::Ghost);
+			return std::make_unique<Pokemon>(pokemon_name, 251, 216, 136, 196, 246, Types::Ghost);
 		else if (pokemon_name == "Snorlax")
-			return std::make_unique<Pokemon>(pokemon_name, 160, Types::Normal);
+			return std::make_unique<Pokemon>(pokemon_name, 461, 256, 166, 166, 256, Types::Normal);
 		else if (pokemon_name == "Venusaur")
-			return std::make_unique<Pokemon>(pokemon_name, 100, Types::Grass);
+			return std::make_unique<Pokemon>(pokemon_name, 301, 200, 236, 202, 236, Types::Grass);
 		else if (pokemon_name == "Zoroark")
-			return std::make_unique<Pokemon>(pokemon_name, 85, Types::Dark);
+			return std::make_unique<Pokemon>(pokemon_name, 261, 246, 276, 156, 156, Types::Dark);
 		else
 			return nullptr;
 	}
