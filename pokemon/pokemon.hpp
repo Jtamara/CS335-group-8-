@@ -160,7 +160,7 @@ public:
         return total_damage;
     };
 
-    std::pair<int, int> minimax_decision(const std::unique_ptr<Pokemon> & opponent, int depth, int whose_turn) {
+    std::pair<int, int> MinimaxDecision(const std::unique_ptr<Pokemon> & opponent, int depth, int whose_turn) {
         // Algorithm inspiration from https://github.com/GeorgeSeif/Tic-Tac-Toe-AI/blob/master/Source.cpp#L201 with no alpha beta pruning
         // Algorithm does not account for the chance of missing or critical hits
 
