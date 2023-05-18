@@ -61,8 +61,6 @@ int main() {
     auto players_pokemon = PokemonFactory::build(PokemonOptions::kOptions.at(selection));
     allocate_pokemon_random_evs(players_pokemon);
 
-    // TODO: Randomly allocate 508 EVs, with a max of 252 per stat to add variance to game
-
     // Hardcoded moves for testing
     players_pokemon->add_attack(AttackFactory::build("Hydro Pump"));
     players_pokemon->add_attack(AttackFactory::build("Mega Kick"));
@@ -83,17 +81,15 @@ int main() {
     std::cout << "You have selected " << players_pokemon->get_name() << "!" << std::endl;
     std::cout << "Your opponent has chosen " << opponents_pokemon->get_name() << "!" << std::endl;
 
-    // TODO: Battle Sequence Below
+    // Battle Sequence
     bool has_not_ended = true;
     bool player_won;
     while (has_not_ended) {
-        // Battle Sequence logic goes here
-        // WARNING: CURRENTLY FORMS AN INFINITE LOOP!
-
         // Terminal condition
         if (Pokemon::has_fainted(players_pokemon, opponents_pokemon)) {
             has_not_ended = false;
             player_won = players_pokemon->has_fainted() ? false : true;
+            break;
         }
 
         // Print out current game information, HP, etc
@@ -144,12 +140,6 @@ int main() {
         int damage_to_take = opponents_pokemon->CalcDamage(players_pokemon.get(), opponent_move_selection);
         std::cout << damage_to_take << " damage dealt!" << std::endl;
         players_pokemon->TakeDamage(damage_to_take);
-
-        // Terminal condition
-        if (Pokemon::has_fainted(players_pokemon, opponents_pokemon)) {
-            has_not_ended = false;
-            player_won = players_pokemon->has_fainted() ? false : true;
-        }
     }
 
     if (player_won) {

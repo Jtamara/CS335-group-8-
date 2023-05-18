@@ -94,6 +94,18 @@ public:
         return this->attacks_[index];
     };
 
+    // The ratio of effective attack to effective defense, used by CalcDamage
+    double CalcADRatio(int other_spdef, int other_def, const std::shared_ptr<Attack> & move_used) {
+        if (move_used->get_category() == Category::Special) {
+            // (Power x A/D)
+            return (double)this->get_base_special_power() / other_spdef;
+        }
+        else {
+            return (double)this->get_base_power() / other_def;
+        }
+    };
+
+    // Damage calculation for use in altering game state
     int CalcDamage(Pokemon * other, int move_selection, bool print = true) {
         // damage calculations used from formula: https://bulbapedia.bulbagarden.net/wiki/Damage for Generation 1
         // Damage = (((2 x Level x Critical) / 5) + 2) * Power * (A/D) / 50) x STAB x Type x RAND(0.85, 1.0)
@@ -108,7 +120,10 @@ public:
             return 0;
         }
 
-        int total_damage = 0;
+        // Use double for internal calculation before rounding down at the end to reduce precision loss
+        // Pokemon Gen 1 used various tricks in interal calculations to increase the precision of 8-bit integer representations
+        // We approximate this by using doubles and then truncating at the final step
+        double total_damage = 0;
         int critical_hit = 1;
 
         // Check for critical hits with a 6.25% chance
@@ -123,15 +138,10 @@ public:
         total_damage = (((2 * 100 * critical_hit) / 5) + 2) * move_used->get_power(); // Assume all pokemon are level 100
 
         // Calculate Special/Physical attacks with opponent's defense stat
-        // (A/D)
-        if (move_used->get_category() == Category::Special) {
-            // (Power x A/D)
-            total_damage *= this->get_base_special_power() / other->get_spdef();
-        }
-        else {
-            total_damage *= this->get_base_power() / other->get_def();
-        }
+        // (Power x A/D)
+        total_damage *= CalcADRatio(other->get_spdef(), other->get_def(), move_used);
 
+        // Normalize
         total_damage /= 50;
         total_damage += 2;
 
@@ -157,12 +167,43 @@ public:
         // Randomize damage by 15%
         total_damage *= ((double)rand() / (RAND_MAX)) * 0.15 + 0.85;
 
-        return total_damage;
+        return (int)total_damage;
+    };
+
+    // Estimated damage outout, which provides expected outcome when number of turns grow large,
+    // based on law of large numbers.
+    // This is used by MinimaxDecision for determining the best move to use.
+    int CalcExpectedDamage(Pokemon* other, int move_selection) {
+        auto move_used = this->attacks_[move_selection];
+        // Raw power
+        double total_damage = move_used->get_power();
+        // apply accuracy modifier
+        // get_accuracy returns double representing % change to hit => expected value tends towards power * accuracy
+        total_damage *= move_used->get_accuracy();
+
+        // apply crit modifier
+        // 6.25% of 2, and 93.75% of 1 => expected value 1.0625 when n grows large
+        // (((2 * 100 * 1.0625) / 5) + 2) = 44.5
+        total_damage *= 44.5;
+
+        // defense modifier
+        total_damage *= CalcADRatio(other->get_spdef(), other->get_def(), move_used);
+
+        // Normalize
+        total_damage /= 50;
+        total_damage += 2;
+
+        // Calculate STAB bonus
+        total_damage *= (move_used->get_type() == this->get_type()) ? 1.5 : 1;
+
+        // Type modifier
+        total_damage *= (is_super_effective(move_used->get_type(), other->get_type())) ? 2 : ((is_not_very_effective(move_used->get_type(), other->get_type())) ? 0.5 : 1);
+
+        return (int)total_damage;
     };
 
     std::pair<int, int> MinimaxDecision(const std::unique_ptr<Pokemon> & opponent, int depth, int whose_turn) {
         // Algorithm inspiration from https://github.com/GeorgeSeif/Tic-Tac-Toe-AI/blob/master/Source.cpp#L201 with no alpha beta pruning
-        // Algorithm does not account for the chance of missing or critical hits
 
         int best_move = 0; // the index of the best attack to make
         int best_score = 0; // the score of the best attack to make
@@ -184,13 +225,13 @@ public:
             best_score = -1000;
             int score = 0;
             for (int i = 0; i < this->get_attacks().size(); i++) {
-                score = this->CalcDamage(opponent.get(), i, false);
+                score = this->CalcExpectedDamage(opponent.get(), i);
                 if (score > best_score) {
                     best_score = score;
                     best_move = i;
                 }
             }
-            
+
             // Deal damage
             this->TakeDamage(score);
             auto pair = std::make_pair(best_score + MinimaxDecision(opponent, depth - 1, 0).first, best_move);
@@ -202,7 +243,7 @@ public:
             best_score = 1000;
             int score = 0;
             for (int i = 0; i < opponent->get_attacks().size(); i++) {
-                score = opponent->CalcDamage(this, i, false);
+                score = opponent->CalcExpectedDamage(this, i);
                 if (score < best_score) {
                     best_score = score;
                     best_move = i;
