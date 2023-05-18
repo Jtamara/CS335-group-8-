@@ -77,10 +77,9 @@ int main() {
         // 1 2
         // 3 4
         std::cout << std::endl << "--------------------------------------------" << std::endl;
-        std::cout << "\t1. " << players_pokemon->get_attack(0)->get_name() << std::endl;
-        std::cout << "\t2. " << players_pokemon->get_attack(1)->get_name() << std::endl;
-        std::cout << "\t3. " << players_pokemon->get_attack(2)->get_name() << std::endl;
-        std::cout << "\t4. " << players_pokemon->get_attack(3)->get_name() << std::endl;
+        for (int i = 0; i < players_pokemon->get_attacks().size(); i++) {
+            std::cout << "\t" << i + 1 << ". " << players_pokemon->get_attack(i)->get_name() << std::endl;
+        }
         std::cout << "Please select an attack: ";
         int move_selection;
         while (true) {

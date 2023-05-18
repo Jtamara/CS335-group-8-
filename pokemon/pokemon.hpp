@@ -146,7 +146,7 @@ public:
             total_damage /= 2;
         }
 
-        // TODO: Randomize damage by 15%
+        // Randomize damage by 15%
         total_damage *= ((double)rand() / (RAND_MAX)) * 0.15 + 0.85;
 
         return total_damage;
