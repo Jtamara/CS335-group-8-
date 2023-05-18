@@ -189,7 +189,7 @@ public:
                     best_move = i;
                 }
             }
-            return std::make_pair(best_score + minimax_decision(opponent, depth - 1, 0).first, best_move);
+            return std::make_pair(best_score + MinimaxDecision(opponent, depth - 1, 0).first, best_move);
         }
         else { // Minimizing opponent's turn
             best_score = 1000;
@@ -200,7 +200,7 @@ public:
                     best_move = i;
                 }
             }
-            return std::make_pair(best_score + minimax_decision(opponent, depth - 1, 1).first, best_move);
+            return std::make_pair(best_score + MinimaxDecision(opponent, depth - 1, 1).first, best_move);
         }
         return std::make_pair(best_score, best_move);
     };

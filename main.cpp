@@ -107,7 +107,9 @@ int main() {
         std::cout << std::endl;
 
         // Calculate how much damage opponent is dealing to player.
-        int opponent_move_selection = opponents_pokemon->MinimaxDecision(players_pokemon, 4, 1).second; // Use minimax to determine best move to use with a ply of 4
+        auto minimax = opponents_pokemon->MinimaxDecision(players_pokemon, 4, 1); // Use minimax to determine best move to use with a ply of 4
+        int opponent_move_selection = minimax.second;
+
         std::cout << "Opponent's " << opponents_pokemon->get_name() << " has used " << opponents_pokemon->get_attack(opponent_move_selection)->get_name() << "!" << std::endl;
         int damage_to_take = opponents_pokemon->CalcDamage(players_pokemon.get(), opponent_move_selection);
         std::cout << damage_to_take << " damage dealt!" << std::endl;
